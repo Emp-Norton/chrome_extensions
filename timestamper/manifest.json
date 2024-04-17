@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Page Info Extractor",
+  "version": "1.0",
+  "description": "Extracts page information and sends it to a WebSocket server.",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "ws://localhost:8765/"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
