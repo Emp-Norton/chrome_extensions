@@ -1,0 +1,30 @@
+**broadcast-channel-tool.js**
+```javascript
+class BroadcastChannelTool {
+  constructor(channelName) {
+    this.channel = new BroadcastChannel(channelName);
+    this.listeners = {};
+
+    this.channel.onmessage = (event) => {
+      const { type, data } = event.data;
+      if (this.listeners[type]) {
+        this.listeners[type].forEach((listener) => listener(data));
+      }
+    };
+  }
+
+  on(type, listener) {
+    if (!this.listeners[type]) {
+      this.listeners[type] = [];
+    }
+    this.listeners[type].push(listener);
+  }
+
+  emit(type, data) {
+    this.channel.postMessage({ type, data });
+  }
+
+  close() {
+    this.channel.close();
+  }
+}
