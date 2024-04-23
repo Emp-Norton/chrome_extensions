@@ -1,0 +1,39 @@
+/* Selects a specific type of widget */
+QPushButton {
+    background-color: lightblue;
+    border: 2px solid #555;
+    border-radius: 5px;
+    padding: 8px;
+}
+
+/* Selects by object name (set in Qt Designer or code) */
+#mySpecialLabel {
+    color: red;
+    font-weight: bold;
+}
+
+/* Selects widgets in a state (hover, focus, etc.) */
+QLineEdit:hover {
+    background-color: #f0f0f0;
+}
+
+/* A container for a single tweet */
+QWidget#tweetContainer {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+/* The label for the message content */
+QLabel#tweetMessage {
+    font-size: 15px;
+    padding: 10px;
+}
+
+/* Metadata like timestamp and URL */
+QLabel#tweetInfo {
+    color: #888;
+    font-size: 12px;
+    padding: 5px 10px;
+}
