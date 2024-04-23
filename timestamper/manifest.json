@@ -3,12 +3,11 @@
   "name": "Page Info Extractor",
   "version": "1.0",
   "description": "Extracts page information and sends it to a WebSocket server.",
+  "host_permissions": ["*://*/*"],
   "permissions": [
     "tabs",
     "activeTab",
-    "webNavigation",
-    "webRequest",
-    "webRequestBlocking",
+    "http://localhost:8765/",
     "ws://localhost:8765/"
   ],
   "background": {
@@ -17,7 +16,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["*://*.dataannotation.tech/*"],
       "js": ["content.js"]
     }
   ]
