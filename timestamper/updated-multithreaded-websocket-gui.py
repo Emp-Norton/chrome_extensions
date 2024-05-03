@@ -28,10 +28,10 @@ class WebSocketServer(QObject):
         super().__init__()
         self.queue = queue.Queue()
         self.shutdown = False # Flag for signal interrupts
-        # Create a QTimer to check the queue every second
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.check_queue)
-        self.timer.start(1000) # Check the queue every second
+        # # Create a QTimer to check the queue every second
+        # self.timer = QTimer()
+        # self.timer.timeout.connect(self.check_queue)
+        # self.timer.start(1000) # Check the queue every second
 
 
     # def signal_handler(self, sig, frame):
@@ -42,10 +42,10 @@ class WebSocketServer(QObject):
     def start_server(self):
         asyncio.run(self.main())
 
-    def check_queue(self):
-        if not self.queue.empty():
-            message = self.queue.get()
-            self.message_received.emit(message)
+    # def check_queue(self):
+    #     if not self.queue.empty():
+    #         message = self.queue.get()
+    #         self.message_received.emit(message)
 
     async def process_message(self, websocket, path):
         async for message in websocket:
@@ -57,6 +57,7 @@ class WebSocketServer(QObject):
                 message_text = data["data"]["message"]
                 url = data["data"]["url"]
                 self.queue.put({"timestamp": timestamp, "message": message_text, "url": url})
+                self.message_received.emit({"timestamp": timestamp, "message": message_text, "url": url})
             except json.JSONDecodeError as e:
                 print(f"Invalid JSON format {e}")
             except Exception as e:        
@@ -71,6 +72,8 @@ class MyGUI(QWidget):
     def __init__(self):
         super().__init__()        
         self.initUI()
+        self.textTrail = ''
+        self.delimiter = '<br>'
 
     def initUI(self):
         self.setWindowTitle('WebSocket Server GUI')  
@@ -90,12 +93,15 @@ class MyGUI(QWidget):
         """)
 
     @pyqtSlot(dict)
-    def updateMessageLabel(self, data):        
+    def updateMessageLabel(self, data):
+        previous_text = self.messageLabel.text
+        print(previous_text)
         timestamp = data["timestamp"]
         message = data["message"]      
         url = data["url"]      
-        new_message_text = f"[{timestamp}] {message} ({url})"        
-        self.messageLabel.setText(new_message_text)
+        new_message_text = f"[{timestamp}] {message} ({url})"
+        self.textTrail += (new_message_text + self.delimiter)
+        self.messageLabel.setText(self.textTrail)
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)  # For Ctrl+C
