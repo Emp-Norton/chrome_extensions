@@ -1,0 +1,54 @@
+**WebSocketClient Class Documentation**
+
+The WebSocketClient class is a JavaScript module that provides a simple interface for establishing and managing WebSocket connections. It allows you to connect to a WebSocket server, send messages, receive messages, and close the connection.
+
+**Usage Instructions:**
+
+1. Import the WebSocketClient class in your JavaScript file using ES6 syntax:
+```
+import WebSocketClient from './WebSocketClient';
+```
+Or, if you're using CommonJS syntax:
+```
+const WebSocketClient = require('./WebSocketClient').default;
+```
+Note that the `.default` property is needed when using `require` because the class is exported as the default export.
+
+2. Create an instance of the WebSocketClient class, passing the URL of the WebSocket server as a parameter:
+```
+const client = new WebSocketClient('ws://example.com/ws');
+```
+3. Call the `connect()` method to establish the WebSocket connection:
+```
+client.connect();
+```
+4. To receive messages from the server, set a callback function using the `onMessage()` method:
+```
+client.onMessage((message) => {
+  console.log(`Received message: ${message}`);
+});
+```
+5. To send a message to the server, use the `send()` method:
+```
+client.send('Hello, server!');
+```
+6. To close the WebSocket connection, call the `close()` method:
+```
+client.close();
+```
+
+**Tips:**
+
+* Make sure to handle errors by setting an error callback function using the `onerror` property.
+* Use the `readyState` property to check if the WebSocket connection is open before sending messages.
+* If you need to reconnect to the server after a disconnection, create a new instance of the WebSocketClient class and call the `connect()` method again.
+
+**Explanation:**
+
+The WebSocketClient class uses the WebSocket API to establish a connection to a WebSocket server. The `connect()` method creates a new WebSocket object and sets up event listeners for the `open`, `message`, `close`, and `error` events.
+
+The `onMessage()` method sets a callback function that will be called when a message is received from the server. The `send()` method sends a message to the server, but only if the WebSocket connection is open.
+
+The `close()` method closes the WebSocket connection.
+
+By using this class, you can easily establish and manage WebSocket connections in your JavaScript application.
