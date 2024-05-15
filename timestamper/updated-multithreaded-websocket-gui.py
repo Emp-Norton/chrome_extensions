@@ -1,16 +1,22 @@
 
 import asyncio
-import datetime
 import json
 import logging
+import pytz
 import queue
 import signal
 import sys
 import websockets
 
+from datetime import datetime
+
 from PyQt5.QtCore import QObject, pyqtSignal, QThread, pyqtSlot, QTimer
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
 
+def generate_timestamp(tz='US/Pacific'):
+    tz = pytz.timezone(tz)
+    now = datetime.now(tz)
+    return now.strftime("%m/%d/%y - %H:%M:%S")
 
 def signal_handler(sig, frame):
     print('You pressed Ctrl+C - or another interrupt signal.')
@@ -28,24 +34,14 @@ class WebSocketServer(QObject):
         super().__init__()
         self.queue = queue.Queue()
         self.shutdown = False # Flag for signal interrupts
-        # # Create a QTimer to check the queue every second
-        # self.timer = QTimer()
-        # self.timer.timeout.connect(self.check_queue)
-        # self.timer.start(1000) # Check the queue every second
-
-
-    # def signal_handler(self, sig, frame):
-    #     print(f"Received shutdown signal. \nSig: {sig} \n Frame: {frame}")
-    #     self.shutdown = True
 
     @pyqtSlot()
     def start_server(self):
         asyncio.run(self.main())
 
-    # def check_queue(self):
-    #     if not self.queue.empty():
-    #         message = self.queue.get()
-    #         self.message_received.emit(message)
+    def write_to_log(self, message):
+        with open('myapp.log', 'w') as logfile:
+            logfile.write(f"{message}\n")
 
     async def process_message(self, websocket, path):
         async for message in websocket:
@@ -53,10 +49,16 @@ class WebSocketServer(QObject):
                 print(message)
                 data = json.loads(message)
                 # Validate the JSON format
-                timestamp = data["data"]["timestamp"]
                 message_text = data["data"]["message"]
+                timestamp = generate_timestamp()
+
+                if message_text == "set_time":
+                    # Hack workaround to set a time retroactively
+                    timestamp = data["data"]["url"]
                 url = data["data"]["url"]
-                self.queue.put({"timestamp": timestamp, "message": message_text, "url": url})
+                constructed_message = {"timestamp": timestamp, "message": message_text, "url": url}
+                self.write_to_log(constructed_message)
+                self.queue.put(constructed_message)
                 self.message_received.emit({"timestamp": timestamp, "message": message_text, "url": url})
             except json.JSONDecodeError as e:
                 print(f"Invalid JSON format {e}")
@@ -74,13 +76,12 @@ class MyGUI(QWidget):
         self.initUI()
         self.textTrail = ''
         self.delimiter = '<br>'
+        self.setFixedSize(800, 600)
 
     def initUI(self):
         self.setWindowTitle('WebSocket Server GUI')  
         layout = QVBoxLayout()      
-        self.messageLabel = QLabel("Messages will appear here")  
-        layout.addWidget(self.messageLabel)        
-        self.setLayout(layout)        
+        self.messageLabel = QLabel("Waiting for first message...")
         self.setStyleSheet("""
             QLabel#messageLabel {
                 color: #333;
@@ -91,6 +92,9 @@ class MyGUI(QWidget):
                 margin-bottom: 5px;   
             }
         """)
+        layout.addWidget(self.messageLabel)
+        layout.addStretch()
+        self.setLayout(layout)
 
     @pyqtSlot(dict)
     def updateMessageLabel(self, data):
