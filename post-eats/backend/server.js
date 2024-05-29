@@ -4,7 +4,7 @@ const app = express();
 const url = 'mongodb://localhost:27017';
 const dbName = 'post-eats';
 const collectionName = 'menu-items';
-
+const PORT = 10101
 app.use(express.json());
 
 app.post('/check-mongodb', (req, res) => {
@@ -31,6 +31,6 @@ app.post('/check-mongodb', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Server listening on port 3000');
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });
