@@ -1,7 +1,12 @@
 function captureText() {
-  const codeDivs = document.querySelectorAll('.code');
-  const textArray = Array.from(codeDivs).map(div => div.textContent);
+  const codeElements = document.querySelectorAll('code');
+  const textArray = Array.from(codeElements).map(element => element.textContent);
   return textArray.join('\n');
 }
 
-chrome.runtime.sendMessage({ action: 'captureText', text: captureText() });
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.action === 'captureText') {
+    const text = captureText();
+    chrome.runtime.sendMessage({ action: 'sendText', text: text });
+  }
+});
