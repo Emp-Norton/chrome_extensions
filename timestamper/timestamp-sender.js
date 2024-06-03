@@ -13,3 +13,4 @@ socket.onopen = function(event) {
     
     socket.send(JSON.stringify(message));
 };
+
