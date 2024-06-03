@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Text Capture",
+  "version": "1.0",
+  "description": "Capture text from a website and send it to a web server",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["backgroundScript.js"],
+    "persistent": false
+  }
+}
