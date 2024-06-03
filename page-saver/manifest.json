@@ -4,6 +4,9 @@
   "version": "1.0",
   "description": "Capture text from a website and send it to a web server",
   "permissions": ["activeTab"],
+  "browser_action": {
+    "popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
