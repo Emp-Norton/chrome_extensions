@@ -1,3 +1,4 @@
+import { openAiApiKey } from './config.js';
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.action === 'sendText') {
     getKeywordsFromOpenAI(request.text)
@@ -7,7 +8,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function getKeywordsFromOpenAI(text) {
-  const apiKey = 'YOUR_OPENAI_API_KEY';
   const model = 'text-davinci-002';
   const prompt = `Extract keywords from this text: ${text}`;
   const data = {
@@ -21,7 +21,7 @@ function getKeywordsFromOpenAI(text) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      'Authorization': `Bearer ${openAiApiKey}`
     },
     body: JSON.stringify(data)
   })
