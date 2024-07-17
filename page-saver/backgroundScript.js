@@ -1,4 +1,4 @@
-import { openAiApiKey } from './config.js';
+const { openAiApiKey } = import('./config.js');
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.action === 'sendText') {
     getKeywordsFromOpenAI(request.text)
