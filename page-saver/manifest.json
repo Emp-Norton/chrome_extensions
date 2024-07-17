@@ -3,9 +3,9 @@
   "name": "Text Capture",
   "version": "1.0",
   "description": "Capture text from a website and send it to a web server",
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "https://api.openai.com/*"],
   "browser_action": {
-    "popup": "popup.html"
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {

@@ -5,6 +5,7 @@ const app = express();
 app.post('/capture-text', (req, res) => {
   const fileName = req.query.filename;
   const text = req.body;
+  console.log(`File: ${fileName}\nText:${text}`)
   fs.writeFile(fileName, text, (err) => {
     if (err) {
       console.error(err);
