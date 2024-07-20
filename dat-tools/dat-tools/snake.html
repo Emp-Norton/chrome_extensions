@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: #000;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const gridSize = 20;
+    const canvasSize = canvas.width;
+    const initialSnakeLength = 5;
+
+    let snake, direction, nextDirection, apple, score, highScore, gameLoop;
+
+    function startGame() {
+        snake = [{x: gridSize * 2, y: gridSize * 2}];
+        for (let i = 1; i < initialSnakeLength; i++) {
+            snake.push({x: snake[0].x - gridSize * i, y: snake[0].y});
+        }
+
+        direction = 'RIGHT';
+        nextDirection = direction;
+        apple = spawnApple();
+        score = 0;
+        highScore = localStorage.getItem('snakeHighScore') || 0;
+
+        if (gameLoop) clearInterval(gameLoop);
+        gameLoop = setInterval(update, 500);
+
+        updateScore();
+        draw();
+    }
+
+    function update() {
+        const head = {...snake[0]};
+        switch (nextDirection) {
+            case 'UP':
+                head.y -= gridSize;
+                break;
+            case 'DOWN':
+                head.y += gridSize;
+                break;
+            case 'LEFT':
+                head.x -= gridSize;
+                break;
+            case 'RIGHT':
+                head.x += gridSize;
+                break;
+        }
+        direction = nextDirection;
+
+        if (head.x === apple.x && head.y === apple.y) {
+            score += 10;
+            apple = spawnApple();
+            updateScore();
+        } else {
+            snake.pop();
+        }
+
+        snake.unshift(head);
+
+        if (checkCollision()) {
+            gameOver();
+        } else {
+            draw();
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+        ctx.fillStyle = 'red';
+        ctx.fillRect(apple.x, apple.y, gridSize, gridSize);
+
+        ctx.fillStyle = 'green';
+        snake.forEach(segment => {
+            ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
+        });
+    }
+
+    function spawnApple() {
+        let newApple;
+        do {
+            newApple = {
+                x: Math.floor(Math.random() * canvasSize / gridSize) * gridSize,
+                y: Math.floor(Math.random() * canvasSize / gridSize) * gridSize
+            };
+        } while (snake.some(segment => segment.x === newApple.x && segment.y === newApple.y));
+        return newApple;
+    }
+
+    function checkCollision() {
+        const [head, ...body] = snake;
+        if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize) {
+            return true;
+        }
+        return body.some(segment => segment.x === head.x && segment.y === head.y);
+    }
+
+    function gameOver() {
+        clearInterval(gameLoop);
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('snakeHighScore', highScore);
+        }
+        alert(`Game Over! Your score: ${score}`);
+        startGame();
+    }
+
+    function updateScore() {
+        document.title = `Score: ${score} | High Score: ${highScore}`;
+    }
+
+    document.addEventListener('keydown', e => {
+        switch (e.key) {
+            case 'ArrowUp':
+                if (direction !== 'DOWN') nextDirection = 'UP';
+                break;
+            case 'ArrowDown':
+                if (direction !== 'UP') nextDirection = 'DOWN';
+                break;
+            case 'ArrowLeft':
+                if (direction !== 'RIGHT') nextDirection = 'LEFT';
+                break;
+            case 'ArrowRight':
+                if (direction !== 'LEFT') nextDirection = 'RIGHT';
+                break;
+        }
+    });
+
+    startGame();
+</script>
+</body>
+</html>
