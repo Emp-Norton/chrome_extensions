@@ -59,7 +59,7 @@
   opacity: 0;
   }
 
-.right-eyeball .eyes {
+.right-eyeball:hover {
   animation: eyeglow 5s ease-in-out alternate-reverse;
 }
 
