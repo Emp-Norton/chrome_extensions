@@ -7,7 +7,10 @@ const addLabels = (a, b) => {
 }
 
 const fixTimes = () => {
-    Array.from($('time')).forEach((el)=>el.innerText+= '\n' + `${new Date(el.dateTime*1).toLocaleTimeString()}`)
+    Array.from(document.getElementsByTagName('time')).forEach((el)=> {
+        let timeString = new Date(el.dateTime * 1).toLocaleTimeString();
+        el.innerText+= '\n' + timeString
+    })
 }
 
 module.exports = { fixTimes: fixTimes, addLabels: addLabels }
