@@ -1,12 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
+import root from '../../src/index'
+import App from '../../src/App';
 
 // Your React component for the popup
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
 const Popup = () => {
     return (
         <div>
-            <h1>Hello from React Chrome Extension Popup!</h1>
-            {/* Add more content here */}
+            <App />
         </div>
     );
 };
