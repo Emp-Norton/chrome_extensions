@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "Description of my extension",
   "action": {
-    "default_popup": "dat-tools/public/popup/index.html",
+    "default_popup": "dat-tools/public/index.html",
     "default_icon": {
       "16": "icon16.png",
       "48": "icon48.png",
@@ -18,5 +18,11 @@
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dat-tools/src/index.js"]
+    }
+  ]
 }
