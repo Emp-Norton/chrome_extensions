@@ -68,5 +68,8 @@ def create_extension_skeleton(extension_name):
         f.write('# ' + extension_name + '\n')
 
 if __name__ == '__main__':
-    extension_name = input('Enter the name of your extension: ')
+    parser = argparse.ArgumentParser(description='A helpful little tool for creating the files and directory structure required for developing chrome extensions.')
+    parser.add_argument('name', help='Enter the name of your chrome extension project. This will also be used for the aforementioned directories and files, following convention.')
+    args = parser.parse_args()
+    extension_name = args.name
     create_extension_skeleton(extension_name)
