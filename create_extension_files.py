@@ -1,5 +1,5 @@
-import os
-import json
+import argparse, json, os
+
 
 def create_extension_skeleton(extension_name):
     os.mkdir(extension_name)
